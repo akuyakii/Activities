@@ -393,7 +393,7 @@ function buildPageActivity(page: PageState): PresenceData {
     largeImageKey: STORM_TEMPEST_IMAGE,
     buttons: [
       {
-        label: 'Open Storm Tempest',
+        label: 'Storm Tempest',
         url: page.url,
       },
     ],
