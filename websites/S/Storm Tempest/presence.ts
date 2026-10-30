@@ -130,6 +130,7 @@ function sourceFromUrl(): string | undefined {
     novelsto: 'Novelsto',
     codesto: 'Codesto',
     tvsto: 'Tvsto',
+    toolsto: 'Toolsto',
     gamesto: 'Gamesto',
   }
 
@@ -303,6 +304,7 @@ function getPageName(): string {
     tvsto: 'Live TV',
     gamesto: 'Games',
     codesto: 'Code Tools',
+    toolsto: 'Tools',
   }
 
   const pageName = pageNames[firstSegment.toLowerCase()]
