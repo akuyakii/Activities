@@ -132,6 +132,7 @@ function sourceFromUrl(): string | undefined {
     tvsto: 'Tvsto',
     toolsto: 'Toolsto',
     gamesto: 'Gamesto',
+    studysto: 'Studysto',
   }
 
   for (const part of document.location.pathname.split('/').filter(Boolean)) {
@@ -305,6 +306,7 @@ function getPageName(): string {
     gamesto: 'Games',
     codesto: 'Code Tools',
     toolsto: 'Tools',
+    studysto: 'Study',
   }
 
   const pageName = pageNames[firstSegment.toLowerCase()]
