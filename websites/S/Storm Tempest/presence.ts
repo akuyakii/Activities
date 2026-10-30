@@ -4,7 +4,7 @@ const presence = new Presence({
   clientId: '1233213267053248633',
 })
 
-const STORM_TEMPEST_IMAGE = 'https://akuyaki.rest/logo-512.png'
+const STORM_TEMPEST_IMAGE = 'https://cdn.rcd.gg/PreMiD/websites/S/Storm%20Tempest/assets/logo.png'
 
 const browsingTimestamp = Math.floor(Date.now() / 1000)
 
