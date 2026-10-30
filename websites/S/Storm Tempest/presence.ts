@@ -6,6 +6,8 @@ const presence = new Presence({
 
 const STORM_TEMPEST_IMAGE = 'https://akuyaki.rest/logo-512.png'
 
+const browsingTimestamp = Math.floor(Date.now() / 1000)
+
 interface WatchState {
   title: string
   source?: string
@@ -391,6 +393,7 @@ function buildPageActivity(page: PageState): PresenceData {
     details: `Browsing ${page.name}`,
     state: 'Storm Tempest',
     largeImageKey: STORM_TEMPEST_IMAGE,
+    startTimestamp: browsingTimestamp,
     buttons: [
       {
         label: 'Storm Tempest',
