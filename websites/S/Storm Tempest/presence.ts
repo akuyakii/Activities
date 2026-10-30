@@ -130,7 +130,6 @@ function sourceFromUrl(): string | undefined {
     novelsto: 'Novelsto',
     codesto: 'Codesto',
     tvsto: 'Tvsto',
-    toolsto: 'Toolsto',
     gamesto: 'Gamesto',
   }
 
@@ -296,21 +295,14 @@ function getPageName(): string {
   }
 
   const pageNames: Record<string, string> = {
-    search: 'Search',
-    anime: 'Anime',
-    genre: 'Genres',
-    genres: 'Genres',
-    category: 'Categories',
-    categories: 'Categories',
-    movies: 'Movies',
-    movie: 'Movie',
-    series: 'Series',
-    favorites: 'Favorites',
-    favourite: 'Favorites',
-    history: 'History',
-    settings: 'Settings',
-    profile: 'Profile',
-    browse: 'Browse',
+    anisto: 'Anime',
+    mangasto: 'Manga',
+    movisto: 'Movies',
+    novelsto: 'Novels',
+    booksto: 'Books',
+    tvsto: 'Live TV',
+    gamesto: 'Games',
+    codesto: 'Code Tools',
   }
 
   const pageName = pageNames[firstSegment.toLowerCase()]
