@@ -6,6 +6,8 @@ const presence = new Presence({
 
 const STORM_TEMPEST_IMAGE = 'https://cdn.rcd.gg/PreMiD/websites/S/Storm%20Tempest/assets/logo.png'
 
+const browsingTimestamp = Math.floor(Date.now() / 1000)
+
 interface WatchState {
   title: string
   source?: string
@@ -391,9 +393,10 @@ function buildPageActivity(page: PageState): PresenceData {
     details: `Browsing ${page.name}`,
     state: 'Storm Tempest',
     largeImageKey: STORM_TEMPEST_IMAGE,
+    startTimestamp: browsingTimestamp,
     buttons: [
       {
-        label: 'Open Storm Tempest',
+        label: 'Storm Tempest',
         url: page.url,
       },
     ],
