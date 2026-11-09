@@ -340,16 +340,25 @@ function getVideo(): HTMLVideoElement | undefined {
  * @returns `true` when the URL or DOM indicates playback.
  */
 function isWatchPage(): boolean {
-  const url
-    = `${document.location.pathname}${document.location.search}`.toLowerCase()
+  const path = document.location.pathname.toLowerCase().replace(/\/+$/, '')
+  const knownRoute
+    = /^\/(?:movisto|tvsto|anisto)\/watch$/.test(path)
+      || path === '/watch'
+      || path === '/anime'
 
-  return (
-    /\/watch\b/.test(url)
-    || /\/episode\b/.test(url)
-    || /\/play\b/.test(url)
-    || /[?&](?:episode|ep)=/i.test(url)
-    || Boolean(getVideo())
-  )
+  if (knownRoute) {
+    return true
+  }
+
+  const video = getVideo()
+
+  if (!video || !isVisible(video)) {
+    return false
+  }
+
+  const rect = video.getBoundingClientRect()
+
+  return rect.width >= 320 && rect.height >= 180
 }
 
 /**
