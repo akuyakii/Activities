@@ -21,16 +21,35 @@ interface PageState {
   url: string
 }
 
+/**
+ * Collapse whitespace and trim a string.
+ *
+ * @param value Raw text, possibly null or undefined.
+ * @returns The normalized text, or `undefined` when empty.
+ */
 function clean(value: string | null | undefined): string | undefined {
   const normalized = value?.replace(/\s+/g, ' ').trim()
 
   return normalized || undefined
 }
 
+/**
+ * Read the normalized text content of an element.
+ *
+ * @param element Element to read, or null.
+ * @returns The cleaned text, or `undefined` when missing or empty.
+ */
 function textOf(element: Element | null): string | undefined {
   return clean(element?.textContent)
 }
 
+/**
+ * Read the normalized value of an element attribute.
+ *
+ * @param element Element to read, or null.
+ * @param attribute Attribute name.
+ * @returns The cleaned value, or `undefined` when missing or empty.
+ */
 function attrOf(
   element: Element | null,
   attribute: string,
@@ -38,6 +57,12 @@ function attrOf(
   return clean(element?.getAttribute(attribute))
 }
 
+/**
+ * Return the text of the first selector that matches a non-empty element.
+ *
+ * @param selectors CSS selectors tried in order.
+ * @returns The first non-empty text, or `undefined`.
+ */
 function queryText(selectors: string[]): string | undefined {
   for (const selector of selectors) {
     const value = textOf(document.querySelector(selector))
@@ -50,6 +75,13 @@ function queryText(selectors: string[]): string | undefined {
   return undefined
 }
 
+/**
+ * Return an attribute from the first selector that yields a non-empty value.
+ *
+ * @param selectors CSS selectors tried in order.
+ * @param attribute Attribute name to read.
+ * @returns The first non-empty value, or `undefined`.
+ */
 function queryAttr(
   selectors: string[],
   attribute: string,
@@ -65,6 +97,12 @@ function queryAttr(
   return undefined
 }
 
+/**
+ * Check whether an element is rendered and has a non-zero size.
+ *
+ * @param element Element to test.
+ * @returns `true` when the element is visible on the page.
+ */
 function isVisible(element: Element): boolean {
   const node = element as HTMLElement
   const style = window.getComputedStyle(node)
@@ -78,6 +116,11 @@ function isVisible(element: Element): boolean {
   )
 }
 
+/**
+ * Detect the active source/server from a visibly selected control in the player UI.
+ *
+ * @returns The selected source name, or `undefined` when none is found.
+ */
 function sourceFromSelectedControl(): string | undefined {
   const selectors = [
     '[aria-pressed="true"]',
@@ -121,6 +164,11 @@ function sourceFromSelectedControl(): string | undefined {
   return undefined
 }
 
+/**
+ * Infer the source (Anisto, Mangasto, ...) from the URL path or query string.
+ *
+ * @returns The source name, or `undefined` when none is recognized.
+ */
 function sourceFromUrl(): string | undefined {
   const sources: Record<string, string> = {
     anisto: 'Anisto',
@@ -156,6 +204,12 @@ function sourceFromUrl(): string | undefined {
   return undefined
 }
 
+/**
+ * Extract an episode number from a string such as `S1E5`, `Episode 5` or `#5`.
+ *
+ * @param value Text to search.
+ * @returns The episode number as a string, or `undefined`.
+ */
 function extractEpisode(value: string | undefined): string | undefined {
   if (!value) {
     return undefined
@@ -179,6 +233,11 @@ function extractEpisode(value: string | undefined): string | undefined {
   return undefined
 }
 
+/**
+ * Find the current episode number from the URL, page title or DOM.
+ *
+ * @returns The episode number, or `undefined` when unknown.
+ */
 function getEpisode(): string | undefined {
   const candidates = [
     document.location.pathname,
@@ -204,6 +263,12 @@ function getEpisode(): string | undefined {
   return undefined
 }
 
+/**
+ * Remove a trailing episode suffix (e.g. `- Episode 5`) from a title.
+ *
+ * @param value Title text.
+ * @returns The title without the episode suffix.
+ */
 function stripEpisode(value: string): string {
   return value
     .replace(
@@ -213,6 +278,11 @@ function stripEpisode(value: string): string {
     .trim()
 }
 
+/**
+ * Resolve the title of the anime being watched from meta tags, headings or the document title.
+ *
+ * @returns The title, or `undefined` when only generic site names are found.
+ */
 function getAnimeTitle(): string | undefined {
   const candidates = [
     queryAttr(
@@ -253,12 +323,22 @@ function getAnimeTitle(): string | undefined {
   return undefined
 }
 
+/**
+ * Find the active (loaded and not ended) video element on the page.
+ *
+ * @returns The video element, or `undefined`.
+ */
 function getVideo(): HTMLVideoElement | undefined {
   return Array.from(
     document.querySelectorAll<HTMLVideoElement>('video'),
   ).find(video => !video.ended && video.readyState > 0)
 }
 
+/**
+ * Decide whether the current page is a watch/player page.
+ *
+ * @returns `true` when the URL or DOM indicates playback.
+ */
 function isWatchPage(): boolean {
   const url
     = `${document.location.pathname}${document.location.search}`.toLowerCase()
@@ -272,6 +352,11 @@ function isWatchPage(): boolean {
   )
 }
 
+/**
+ * Collect everything needed to describe the current watch session.
+ *
+ * @returns The title, source, episode, URL and video element.
+ */
 function getWatchState(): WatchState {
   return {
     title: getAnimeTitle() ?? 'Unknown Anime',
@@ -282,6 +367,11 @@ function getWatchState(): WatchState {
   }
 }
 
+/**
+ * Map the current path to a friendly section name (Anime, Manga, Movies, ...).
+ *
+ * @returns The page name, falling back to `Storm Tempest`.
+ */
 function getPageName(): string {
   const pathname = document.location.pathname
   const segments = pathname.split('/').filter(Boolean)
@@ -327,6 +417,11 @@ function getPageName(): string {
   return 'Storm Tempest'
 }
 
+/**
+ * Collect the name and URL of the page being browsed.
+ *
+ * @returns The current page state.
+ */
 function getPageState(): PageState {
   return {
     name: getPageName(),
@@ -334,6 +429,12 @@ function getPageState(): PageState {
   }
 }
 
+/**
+ * Compute Discord start/end timestamps from the video playback position.
+ *
+ * @param video Active video element, if any.
+ * @returns Timestamps while playing; an empty object when paused, ended or invalid.
+ */
 function getPlaybackTimestamps(
   video: HTMLVideoElement | undefined,
 ): {
@@ -362,6 +463,12 @@ function getPlaybackTimestamps(
   }
 }
 
+/**
+ * Build the presence payload shown while watching.
+ *
+ * @param watch Current watch state.
+ * @returns Presence data for the watching activity.
+ */
 function buildWatchActivity(watch: WatchState): PresenceData {
   const source = watch.source ?? 'Unknown Source'
   const episode = watch.episode
@@ -383,6 +490,12 @@ function buildWatchActivity(watch: WatchState): PresenceData {
   }
 }
 
+/**
+ * Build the presence payload shown while browsing.
+ *
+ * @param page Current page state.
+ * @returns Presence data for the browsing activity.
+ */
 function buildPageActivity(page: PageState): PresenceData {
   return {
     type: ActivityType.Watching,
@@ -399,6 +512,9 @@ function buildPageActivity(page: PageState): PresenceData {
   }
 }
 
+/**
+ * Refresh the Discord activity: the watch view on player pages, the browsing view elsewhere.
+ */
 presence.on('UpdateData', async () => {
   if (isWatchPage()) {
     presence.setActivity(
