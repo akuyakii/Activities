@@ -6,7 +6,34 @@ const presence = new Presence({
 
 const STORM_TEMPEST_IMAGE = 'https://cdn.rcd.gg/PreMiD/websites/S/Storm%20Tempest/assets/logo.png'
 
-const browsingTimestamp = Math.floor(Date.now() / 1000)
+const BROWSING_STORAGE_KEY = 'premid-storm-tempest-browsing-start'
+
+/**
+ * Get the browsing start time, kept across full page loads in the same tab
+ * so the elapsed timer does not reset when navigating between pages.
+ *
+ * @returns Unix timestamp (seconds) of when browsing started.
+ */
+function getBrowsingTimestamp(): number {
+  const now = Math.floor(Date.now() / 1000)
+
+  try {
+    const stored = Number(sessionStorage.getItem(BROWSING_STORAGE_KEY))
+
+    if (Number.isFinite(stored) && stored > 0) {
+      return stored
+    }
+
+    sessionStorage.setItem(BROWSING_STORAGE_KEY, String(now))
+  }
+  catch {
+    return now
+  }
+
+  return now
+}
+
+const browsingTimestamp = getBrowsingTimestamp()
 
 interface WatchState {
   title: string
